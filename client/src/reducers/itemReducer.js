@@ -1,4 +1,9 @@
-import { GET_ITEMS, GET_ITEMS_ERROR, DELETE_ITEM } from "../actions/types";
+import {
+  GET_ITEMS,
+  GET_ITEMS_ERROR,
+  DELETE_ITEM,
+  CREATE_ITEM
+} from "../actions/types";
 
 const initialState = {
   items: [],
@@ -7,6 +12,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case CREATE_ITEM:
+      return {
+        ...state,
+        items: [action.payload, ...state.items]
+      };
     case GET_ITEMS_ERROR:
     case GET_ITEMS:
       return {

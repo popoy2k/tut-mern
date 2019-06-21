@@ -1,4 +1,4 @@
-import { GET_ITEMS, GET_ITEMS_ERROR, DELETE_ITEM } from "./types";
+import { GET_ITEMS, GET_ITEMS_ERROR, DELETE_ITEM, CREATE_ITEM } from "./types";
 import axios from "axios";
 
 export const getItems = () => dispatch => {
@@ -24,4 +24,17 @@ export const deleteItem = id => dispatch => {
       payload: res.data
     });
   });
+};
+
+export const createItem = newItem => dispatch => {
+  let config = { headers: { "Content-Type": "application/json" } };
+  axios
+    .post("api/items", JSON.stringify(newItem), config)
+    .then(res => {
+      dispatch({
+        type: CREATE_ITEM,
+        payload: res.data
+      });
+    })
+    .catch(err => console.log(err));
 };
