@@ -17,9 +17,9 @@ app.use(express.json());
 
 app.use("/api/items", itemsAPI);
 
-app.get("/", (req, res) => {
-  res.send("<h1>Nicee!</h1>");
-});
+// app.get("/", (req, res) => {
+//   res.send("<h1>Nicee!</h1>");
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running at port:${PORT}`);

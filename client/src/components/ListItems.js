@@ -1,19 +1,34 @@
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { ListGroup, ListGroupItem, Button } from "reactstrap";
 import { connect } from "react-redux";
-import { getItems } from "../actions/items";
+import { getItems, deleteItem } from "../actions/items";
 import PropTypes from "prop-types";
 
 export class ListItems extends Component {
   componentDidMount() {
     this.props.getItems();
   }
+
+  onClick = id => {
+    this.props.deleteItem(id);
+  };
   render() {
+    const { items } = this.props.item;
     return (
       <div>
-        <ListGroup>
-          {this.props.item.map(item => (
-            <ListGroupItem> {item.name} </ListGroupItem>
+        <ListGroup className="mt-4">
+          {items.map(elem => (
+            <ListGroupItem key={elem._id}>
+              <Button
+                onClick={this.onClick.bind(this, elem._id)}
+                outline
+                color="danger"
+                className="mr-4"
+              >
+                Delete
+              </Button>
+              {elem.name}
+            </ListGroupItem>
           ))}
         </ListGroup>
       </div>
@@ -22,8 +37,9 @@ export class ListItems extends Component {
 }
 
 ListItems.propTypes = {
-  item: PropTypes.array.isRequired,
-  getItems: PropTypes.func.isRequired
+  deleteItem: PropTypes.func.isRequired,
+  getItems: PropTypes.func.isRequired,
+  item: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -32,5 +48,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getItems }
+  { getItems, deleteItem }
 )(ListItems);

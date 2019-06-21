@@ -21,7 +21,7 @@ export class AppNav extends Component {
   render() {
     return (
       <div>
-        <Navbar color="warning" warning expand="md">
+        <Navbar color="warning" dark expand="md">
           <NavbarBrand href="/" className="text-white">
             Shooping List
           </NavbarBrand>
