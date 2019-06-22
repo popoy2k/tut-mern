@@ -1,6 +1,6 @@
 const route = require("express").Router();
 const Item = require("../../models/item");
-
+const authToken = require("../../middleware/auth");
 route.get("/", (req, res) => {
   Item.find()
     .sort({ data: -1 })
@@ -13,14 +13,14 @@ route.get("/:id", (req, res) => {
   });
 });
 
-route.post("/", (req, res) => {
+route.post("/", authToken, (req, res) => {
   const newItem = Item({
     name: req.body.name
   });
   newItem.save().then(item => res.json(item));
 });
 
-route.delete("/:id", (req, res) => {
+route.delete("/:id", authToken, (req, res) => {
   Item.findById(req.params.id)
     .then(item => {
       item.remove({}).then(() => {
