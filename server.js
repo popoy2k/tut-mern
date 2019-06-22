@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-// const bodyParser = require("body-parser");
+const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const itemsAPI = require("./route/api/items");
@@ -17,10 +17,12 @@ app.use(express.json());
 
 app.use("/api/items", itemsAPI);
 
-// app.get("/", (req, res) => {
-//   res.send("<h1>Nicee!</h1>");
-// });
-
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFIle(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 app.listen(PORT, () => {
   console.log(`Server is running at port:${PORT}`);
 });
