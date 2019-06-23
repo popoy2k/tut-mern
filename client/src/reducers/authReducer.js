@@ -21,20 +21,23 @@ export default (state = initialState, action) => {
     case USER_LOADING:
       return {
         ...state,
+        // token: localStorage.getItem("token"),
         isLoading: true
       };
     case USER_LOADED:
       return {
         ...state,
-        user: state.payload,
+        user: action.payload.user,
         isLoading: false,
         isAuthenticated: true
       };
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
+      localStorage.setItem("token", `${action.payload.token}`);
       return {
         ...state,
-        ...state.payload,
+        user: action.payload.user,
+        token: action.payload.token,
         isAuthenticated: true,
         isLoading: false
       };
