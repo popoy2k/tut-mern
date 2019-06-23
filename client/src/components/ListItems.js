@@ -14,19 +14,25 @@ export class ListItems extends Component {
   };
   render() {
     const { items } = this.props.item;
+    const { isAuthenticated } = this.props;
     return (
       <div>
         <ListGroup className="mt-4">
           {items.map(elem => (
             <ListGroupItem key={elem._id}>
-              <Button
-                onClick={this.onClick.bind(this, elem._id)}
-                outline
-                color="danger"
-                className="mr-4"
-              >
-                Delete
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  onClick={this.onClick.bind(this, elem._id)}
+                  outline
+                  color="danger"
+                  className="mr-4"
+                >
+                  Delete
+                </Button>
+              ) : (
+                ""
+              )}
+
               {elem.name}
             </ListGroupItem>
           ))}
@@ -39,11 +45,13 @@ export class ListItems extends Component {
 ListItems.propTypes = {
   deleteItem: PropTypes.func.isRequired,
   getItems: PropTypes.func.isRequired,
-  item: PropTypes.object
+  item: PropTypes.object,
+  isAuthenticated: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
-  item: state.item
+  item: state.item,
+  isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(

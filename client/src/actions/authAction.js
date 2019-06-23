@@ -7,13 +7,13 @@ import {
   REGISTER_ERROR,
   USER_LOADED,
   USER_LOADING,
-  CLEAR_ERROR
+  LOGIN_ERROR
 } from "./types";
 
 import { returnError } from "./errorAction";
 import axios from "axios";
 
-export const getConfig = () => getState => {
+export const getConfig = getState => {
   const token = getState().auth.token;
 
   const config = {
@@ -28,11 +28,11 @@ export const getConfig = () => getState => {
   return config;
 };
 
-export const authUser = () => dispatch => {
+export const authUser = () => (dispatch, getState) => {
   dispatch({ type: USER_LOADING });
 
   axios
-    .get("/api/auth/user", getConfig)
+    .get("/api/auth/user", getConfig(getState))
     .then(res => {
       dispatch({
         type: USER_LOADED,
@@ -64,5 +64,28 @@ export const registerUser = newUser => dispatch => {
         returnError(err.response.data.msg, err.response.status, REGISTER_ERROR)
       );
       dispatch({ type: REGISTER_ERROR });
+    });
+};
+
+export const loginUser = logUser => (dispatch, getState) => {
+  const { name, email, password } = logUser;
+  const config = getConfig(getState);
+  const body = { name, email, password };
+
+  axios
+    .post("/api/auth/", body, config)
+    .then(res => {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch(
+        returnError(err.response.data.msg, err.response.status, LOGIN_ERROR)
+      );
+      dispatch({
+        type: LOGIN_ERROR
+      });
     });
 };

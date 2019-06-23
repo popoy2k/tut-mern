@@ -13,22 +13,20 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { registerUser } from "../../actions/authAction";
+import { loginUser } from "../../actions/authAction";
 import { clearError } from "../../actions/errorAction";
-export class AddItem extends Component {
+export class LoginNav extends Component {
   state = {
     isOpen: false,
-    name: "",
     email: "",
     password: "",
-    password1: "",
     msg: null
   };
   componentDidUpdate(prevProps) {
     const { error, isAuthenticated } = this.props;
 
     // If register not success show error (server side)
-    if (prevProps.error !== error && this.props.error.id === "REGISTER_ERROR") {
+    if (prevProps.error !== error && this.props.error.id === "LOGIN_ERROR") {
       this.setState({ msg: error.msg });
     }
     // If registered success close modal
@@ -52,27 +50,27 @@ export class AddItem extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, email, password, password1 } = this.state;
+    const { email, password } = this.state;
 
     // CS Validation
-    if (!name || !email || !password || !password1) {
+    if (!email || !password) {
       return this.setState({ msg: "Please fill all field!" });
     }
-    if (password !== password1)
-      return this.setState({ msg: "Password don't match!" });
 
-    const newUser = { name, email, password };
-    this.props.registerUser(newUser);
+    const newUser = { email, password };
+    this.props.loginUser(newUser);
   };
   render() {
-    const { isOpen, name, email, password, password1 } = this.state;
+    const { isOpen, email, password } = this.state;
     return (
       <Fragment>
         <NavLink onClick={this.toggle} href="#" className="text-white">
-          Register
+          Login
         </NavLink>
         <Modal isOpen={isOpen} toggle={this.toggle} className="bg-success">
-          <ModalHeader toggle={this.toggle}>Register</ModalHeader>
+          <ModalHeader toggle={this.toggle}>
+            Welcome to shooping list!
+          </ModalHeader>
           <ModalBody>
             <Form onSubmit={this.onSubmit}>
               {this.state.msg ? (
@@ -82,17 +80,6 @@ export class AddItem extends Component {
                 </Alert>
               ) : null}
 
-              <FormGroup>
-                <Label for="name">Name</Label>
-                <Input
-                  type="text"
-                  name="name"
-                  onChange={this.onChange}
-                  value={name}
-                  className="form-control"
-                  id="name"
-                />
-              </FormGroup>
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input
@@ -115,17 +102,7 @@ export class AddItem extends Component {
                   id="password"
                 />
               </FormGroup>
-              <FormGroup>
-                <Label for="password1">Re-type Password</Label>
-                <Input
-                  type="password"
-                  name="password1"
-                  onChange={this.onChange}
-                  value={password1}
-                  className="form-control"
-                  id="password1"
-                />
-              </FormGroup>
+
               <Button color="info" outline>
                 Submit
               </Button>
@@ -137,8 +114,8 @@ export class AddItem extends Component {
   }
 }
 
-AddItem.propTypes = {
-  registerUser: PropTypes.func.isRequired,
+LoginNav.propTypes = {
+  loginUser: PropTypes.func.isRequired,
   error: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool,
   clearError: PropTypes.func.isRequired
@@ -151,5 +128,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { registerUser, clearError }
-)(AddItem);
+  { loginUser, clearError }
+)(LoginNav);

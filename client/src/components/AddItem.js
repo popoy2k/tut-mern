@@ -7,7 +7,8 @@ import {
   FormGroup,
   Input,
   Label,
-  Form
+  Form,
+  Alert
 } from "reactstrap";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -34,11 +35,20 @@ export class AddItem extends Component {
   };
   render() {
     const { isOpen, name } = this.state;
+    const { isAuthenticated } = this.props;
+
     return (
       <div>
-        <Button color="success" outline onClick={this.toggle}>
-          Add more
-        </Button>
+        {isAuthenticated ? (
+          <Button color="success" outline onClick={this.toggle}>
+            Add more
+          </Button>
+        ) : (
+          <Alert color="danger">
+            <h4>Log-in to alter data.</h4>
+          </Alert>
+        )}
+
         <Modal isOpen={isOpen} toggle={this.toggle} className="bg-success">
           <ModalHeader toggle={this.toggle}>Add Item</ModalHeader>
           <ModalBody>
@@ -65,12 +75,15 @@ export class AddItem extends Component {
 }
 
 AddItem.propTypes = {
-  createItem: PropTypes.func.isRequired
+  createItem: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
 };
 
-// const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
 
 export default connect(
-  null,
+  mapStateToProps,
   { createItem }
 )(AddItem);

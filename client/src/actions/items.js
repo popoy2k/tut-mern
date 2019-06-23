@@ -1,4 +1,5 @@
 import { GET_ITEMS, GET_ITEMS_ERROR, DELETE_ITEM, CREATE_ITEM } from "./types";
+import { getConfig } from "./authAction";
 import axios from "axios";
 
 export const getItems = () => dispatch => {
@@ -17,8 +18,8 @@ export const getItems = () => dispatch => {
     });
 };
 
-export const deleteItem = id => dispatch => {
-  axios.delete(`api/items/${id}`).then(res => {
+export const deleteItem = id => (dispatch, getState) => {
+  axios.delete(`api/items/${id}`, getConfig(getState)).then(res => {
     dispatch({
       type: DELETE_ITEM,
       payload: res.data
@@ -26,10 +27,9 @@ export const deleteItem = id => dispatch => {
   });
 };
 
-export const createItem = newItem => dispatch => {
-  let config = { headers: { "Content-Type": "application/json" } };
+export const createItem = newItem => (dispatch, getState) => {
   axios
-    .post("api/items", JSON.stringify(newItem), config)
+    .post("api/items", JSON.stringify(newItem), getConfig(getState))
     .then(res => {
       dispatch({
         type: CREATE_ITEM,

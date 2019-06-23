@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import {
   Collapse,
   Navbar,
@@ -10,6 +10,10 @@ import {
 
 import RegisterModal from "./auth/RegisterModal";
 import LogoutNav from "./auth/LogoutNav";
+import LoginNav from "./auth/LoginNav";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
 export class AppNav extends Component {
   state = {
     isOpen: false
@@ -18,8 +22,36 @@ export class AppNav extends Component {
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
-
+  static propTypes = {
+    isAuthenticated: PropTypes.bool
+  };
   render() {
+    const { isAuthenticated, user } = this.props;
+
+    const loggedIn = (
+      <Fragment>
+        <NavItem>
+          <span className="navbar-text mr-3">
+            {user ? `Welcome ${user.name}!` : ""}
+          </span>
+        </NavItem>
+        <NavItem>
+          <LogoutNav />
+        </NavItem>
+      </Fragment>
+    );
+
+    const loggedOut = (
+      <Fragment>
+        <NavItem>
+          <RegisterModal />
+        </NavItem>
+        <NavItem>
+          <LoginNav />
+        </NavItem>
+      </Fragment>
+    );
+
     return (
       <div>
         <Navbar color="warning" dark expand="md">
@@ -29,12 +61,7 @@ export class AppNav extends Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
-              <NavItem>
-                <RegisterModal />
-              </NavItem>
-              <NavItem>
-                <LogoutNav />
-              </NavItem>
+              {isAuthenticated ? loggedIn : loggedOut}
             </Nav>
           </Collapse>
         </Navbar>
@@ -43,4 +70,12 @@ export class AppNav extends Component {
   }
 }
 
-export default AppNav;
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user
+});
+
+export default connect(
+  mapStateToProps,
+  {}
+)(AppNav);
